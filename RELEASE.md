@@ -1,16 +1,16 @@
-# Quick Charge v3.1.15 (Shell)
+# Quick Charge v3.1.16 (Shell)
 
-基于上游 `XiaohaoQvQ/QuickCharge` 增强的 Shell 版发布包，更新通道 `shell`（`versionCode: 3011501`）。
+基于上游 `XiaohaoQvQ/QuickCharge` 增强的 Shell 版发布包，更新通道 `shell`（`versionCode: 3011601`）。
 
 ## 主要变更
 
-- **新增物理高温断开兜底 (`hot_cutoff`)**：支持在 `42–55℃` 之间设置硬保护阈值，触发后主动恢复真实温控节点，温度回落 `3℃` 后自动重连，同时同步接入 WebUI 与 CLI (`cutoff`)。
-- **优化拔线状态恢复**：亮/灭屏节点写入异常标记 (`scr.fail`) 改为拔出充电器时清理，并完整保留已记录的正常满充基准 (`fcc.norm`)。
-- **移除多余安装弹窗**：清理 `customize.sh` 刷入阶段的群聊提示弹窗，实现静默安装。
-- **更新源与 CI/CD 适配**：`module.prop` 与 `update.json` 指向 `dkgks/QuickCharge`，已通过全套 Shell 单元测试并由 GitHub Actions 自动构建打包。
+- **修复未插电悬空噪声放大与日志刷屏**：在 `usb/voltage_max`（或 `current_max`）为 `µV`/`µA` 量级且处于未插电（`online=0` 或未充电）状态时，不再对 `1~20mV` 悬空读数执行千倍放大；未充电时判重签名忽略负载波动与悬空 `vusb`，消除待机每 30 秒刷屏。
+- **双电芯电池功率修正**：`sd_chg_line_fill` 计算 `pb` 与中值功率档位时，对双电芯且 `voltage_now` 报单芯电压（`2.5–5.0V`）的机型按双芯包电压折算，避免功率减半。
+- **输入电流符号兼容**：`sd_chg_input_v` 先取绝对值再做单位归一，兼容负号输入电流读数。
+- **继承 v3.1.15 Fork 增强**：包含可选 `hot_cutoff`（`42–55℃`）物理高温断开兜底、拔线清理 `scr.fail` 并保留 `fcc.norm`，以及无弹窗静默安装。
 
 ## 发布产物
 
-- `QuickCharge-v3.1.15.zip`：Magisk / KernelSU / APatch 可刷入模块包
+- `QuickCharge-v3.1.16.zip`：Magisk / KernelSU / APatch 可刷入模块包
 - `update.json`：模块在线更新元数据
 - `RELEASE.md`：本版本更新说明

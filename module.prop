@@ -5,5 +5,5 @@ version=3.1.15
 versionCode=3011501
 channel=shell
 author=Xiaohao
-updateJson=https://github.com/XiaohaoQvQ/QuickCharge/releases/latest/download/update.json
+updateJson=https://github.com/dkgks/QuickCharge/releases/latest/download/update.json
 description=QC·欧加真温控与充电改写

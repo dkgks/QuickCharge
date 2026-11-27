@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends zip
+
+      - name: Run unit tests
+        run: |
+          for t in chg-unit cool-unit mount-unit zone-rank; do
+            sh "tests/$t.sh"
+          done
+          sudo sh tests/state-unit.sh
+
+      - name: Build module zip
+        run: |
+          VER=$(sed -n 's/^version=//p' module.prop | head -n 1)
+          ZIP="QuickCharge-v${VER}.zip"
+          TAG="${GITHUB_REF_NAME}"
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            TAG="v${VER}"
+          fi
+          zip -r9 "$ZIP" META-INF lib webroot customize.sh post-fs-data.sh service.sh action.sh uninstall.sh module.prop LICENSE
+          echo "ZIP_NAME=$ZIP" >> "$GITHUB_ENV"
+          echo "REL_TAG=$TAG" >> "$GITHUB_ENV"
+          echo "REL_TITLE=Quick Charge v${VER}" >> "$GITHUB_ENV"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$REL_TAG" >/dev/null 2>&1; then
+            gh release upload "$REL_TAG" "$ZIP_NAME" update.json RELEASE.md --clobber
+          else
+            gh release create "$REL_TAG" "$ZIP_NAME" update.json RELEASE.md \
+              --title "$REL_TITLE" --notes-file RELEASE.md
+          fi

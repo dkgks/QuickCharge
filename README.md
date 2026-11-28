@@ -15,7 +15,7 @@
 
 ## 快速上手
 
-1. 前往 [Releases](https://github.com/dkgks/QuickCharge/releases/latest) 下载 `QuickCharge-v3.1.16.zip`。
+1. 前往 [Releases](https://github.com/dkgks/QuickCharge/releases/latest) 下载 `QuickCharge-v3.1.17.zip`。
 2. 在 Magisk / KernelSU / APatch 中刷入模块并重启。
 3. 通过模块 **WebUI** 或终端执行控制脚本即可调整参数。
 
